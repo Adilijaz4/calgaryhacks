@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Tracking - Next Chapter</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(to top, #FE8DC6, #FED1C7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+
+        /* Container */
+        .container {
+            width: 100%;
+            max-width: 1700px;
+            height: 90vh;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            height: 100px;
+        }
+
+        /* Navigation */
+        .nav {
+            display: flex;
+            gap: 25px;
+            justify-content: flex-end;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .nav a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background: #ff6384;
+            left: 0;
+            bottom: -5px;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .nav a:hover::after {
+            transform: scaleX(1);
+        }
+
+        /* Dashboard */
+        .dashboard {
+            flex: 1;
+            background-color: #fff;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .dashboard:hover {
+            transform: translateY(-10px);
+        }
+
+        .dashboard h1 {
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            color: #000;
+        }
+
+        /* Cards */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background-color: #fde4e6;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card h3 {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .card ul, .card p {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 200px;
+        }
+
+        .total-section {
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <img src="image.logo.png" alt="My Logo" style="height: 100px;" />
+            </div>
+            <div class="nav">
+                <a href="#">Home</a>
+                <a href="#">Dashboard</a>
+                <a href="#">Financial Tracker</a>
+                <a href="#">Job Listings</a>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="dashboard">
+            <h1>Financial Tracking</h1>
+            <div class="cards">
+                <div class="card">
+                    <h3>Income</h3>
+                    <div class="total-section">Total Income: $75,000</div>
+                    <br>
+                    <ul>
+                        <li>• Track your income sources efficiently.</li>
+                        <li>• Analyze your earnings over time.</li>
+                        <li>• Plan for future income streams.</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Expenses</h3>
+                    <div class="total-section">Total Expenses: $45,000</div>
+                    <br>
+                    <div class="chart-container">
+                        <canvas id="expensesChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Debt</h3>
+                    <p style="font-size: 1.2em; font-weight: bold; margin-bottom: 15px;">Total Debt: $18,500</p>
+                    <div class="chart-container">
+                        <canvas id="debtChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Savings Overview</h3>
+                    <ul>
+                        <li>• Track your savings progress.</li>
+                        <li>• Set achievable saving goals.</li>
+                        <li>• Monitor your savings growth over time.</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Investment Planning</h3>
+                    <ul>
+                        <li>• Explore different investment options.</li>
+                        <li>• Maximize returns with strategic planning.</li>
+                        <li>• Assess risk with intuitive tools.</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Stock Recommendations</h3>
+                    <ul>
+                        <li>• Get personalized stock recommendations.</li>
+                        <li>• Analyze potential investment opportunities.</li>
+                        <li>• Stay updated with market trends.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Debt Chart
+        const debtCtx = document.getElementById('debtChart').getContext('2d');
+        new Chart(debtCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Credit Card', 'Car Payment', 'Student Loan', 'Mortgage'],
+                datasets: [{
+                    data: [3000, 4500, 5000, 6000],
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0']
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Expenses Chart
+        const expensesCtx = document.getElementById('expensesChart').getContext('2d');
+        new Chart(expensesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Shopping', 'Food', 'Bills', 'Medicine', 'Others'],
+                datasets: [{
+                    label: 'Expenses Breakdown ($)',
+                    data: [400, 300, 250, 200, 150],
+                    backgroundColor: [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56',
+                        '#4BC0C0',
+                        '#9966FF'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
